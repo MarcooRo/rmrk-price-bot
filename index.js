@@ -9,18 +9,20 @@ axios.get('https://api.coingecko.com/api/v3/simple/price?ids=rmrk&vs_currencies=
     console.log(response.data.rmrk);
     console.log(response.data.rmrk.usd);
     console.log(response.data.rmrk.usd_24h_change);
-    let coin = 'rmrk';
+    let coin = 'RMRK';
     let price = response.data.rmrk.usd;
     let move = response.data.rmrk.usd_24h_change;
-    $name = coin + ' ' + price + 'usd ' + move.toFixed(2);
+    $name = coin;
+    $newActivity = coin+' '+price+'usd '+move.toFixed(2)+'%';
   })
   .catch(error => {
     console.log(error);
   });
 
 client.on('ready', () => {
-  client.user.setUsername($name);
-  console.log(`Logged in as ${$name}`);
+  // client.user.setUsername($name);
+  client.user.setActivity($newActivity)
+  console.log(`Logged in as ${$newActivity}`);
 });
 
 //make sure this line is the last line
