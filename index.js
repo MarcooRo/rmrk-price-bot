@@ -47,13 +47,15 @@ function requstPriceMessage(coinName) {
           var price = response.data.rmrk.usd
           var move = response.data.rmrk.usd_24h_change
           break;
-        case 'movr':
-          var price = response.data.movr.usd
-          var move = response.data.movr.usd_24h_change
+        case 'moonriver':
+          var price = response.data.moonriver.usd
+          var move = response.data.moonriver.usd_24h_change
+          console.log('price: '+price)
+          console.log('move: '+move)
           break;
-        case 'glrm':
-          var price = response.data.glrm.usd
-          var move = response.data.glrm.usd_24h_change
+        case 'moonbeam':
+          var price = response.data.moonbeam.usd
+          var move = response.data.moonbeam.usd_24h_change
           break;
         case 'bitcoin':
           var price = response.data.bitcoin.usd
@@ -91,7 +93,7 @@ bot.on('messageCreate', msg => {
   }
   if (nameCoin === 'movr') {
     (async ()=>{
-      let resultPriceMessage = await requstPriceMessage('movr')
+      let resultPriceMessage = await requstPriceMessage('moonriver')
       console.log('setActivity: '+resultPriceMessage)
       console.log('----------------------')
       msg.reply(resultPriceMessage)
@@ -99,7 +101,7 @@ bot.on('messageCreate', msg => {
   }
   if (nameCoin === 'glrm') {
     (async ()=>{
-      let resultPriceMessage = await requstPriceMessage('glrm')
+      let resultPriceMessage = await requstPriceMessage('moonbeam')
       console.log('setActivity: '+resultPriceMessage)
       console.log('----------------------')
       msg.reply(resultPriceMessage)
