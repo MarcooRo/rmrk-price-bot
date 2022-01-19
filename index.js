@@ -36,46 +36,86 @@ setInterval(function (){
   updatePrice()
 }, 60000);
 
+
+function requstPriceMessage(coinName) {
+  var nameCoin = coinName;
+  return new Promise(resolve => {
+    axios.get('https://api.coingecko.com/api/v3/simple/price?ids='+nameCoin+'&vs_currencies=usd&include_24hr_change=true')
+    .then(response => {
+      switch (nameCoin) {
+        case 'rmrk':
+          var price = response.data.rmrk.usd
+          var move = response.data.rmrk.usd_24h_change
+          break;
+        case 'movr':
+          var price = response.data.movr.usd
+          var move = response.data.movr.usd_24h_change
+          break;
+        case 'glrm':
+          var price = response.data.glrm.usd
+          var move = response.data.glrm.usd_24h_change
+          break;
+        case 'bitcoin':
+          var price = response.data.bitcoin.usd
+          var move = response.data.bitcoin.usd_24h_change
+          break;
+        default:
+          var price = 'sorry'
+          var move = 'not found'
+      }      
+      var answerCoinName = nameCoin+' $'+price+' '+move.toFixed(2)+'%'
+      console.log('coinName: '+answerCoinName)
+      resolve(answerCoinName)
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  });
+};
+
+
+
 bot.on('messageCreate', msg => {
-  if (msg.content === '!rmrk') {
+
+  var messaggio = msg.content
+  var nameCoin = messaggio.replace("!", "");
+  console.log('messaggio: '+nameCoin)
+
+  if (nameCoin === 'rmrk') {
     (async ()=>{
-      let resultPriceMessage = await requstPrice()
+      let resultPriceMessage = await requstPriceMessage('rmrk')
       console.log('setActivity: '+resultPriceMessage)
       console.log('----------------------')
       msg.reply(resultPriceMessage)
     })();
-}});
+  }
+  if (nameCoin === 'movr') {
+    (async ()=>{
+      let resultPriceMessage = await requstPriceMessage('movr')
+      console.log('setActivity: '+resultPriceMessage)
+      console.log('----------------------')
+      msg.reply(resultPriceMessage)
+    })();
+  }
+  if (nameCoin === 'glrm') {
+    (async ()=>{
+      let resultPriceMessage = await requstPriceMessage('glrm')
+      console.log('setActivity: '+resultPriceMessage)
+      console.log('----------------------')
+      msg.reply(resultPriceMessage)
+    })();
+  }
+  if (nameCoin === 'btc') {
+    (async ()=>{
+      let resultPriceMessage = await requstPriceMessage('bitcoin')
+      console.log('setActivity: '+resultPriceMessage)
+      console.log('----------------------')
+      msg.reply(resultPriceMessage)
+    })();
+  }
+});
 
 
-// function requstPriceCoin(coinAsk) {
-//   return new Promise(resolve => {
-//     axios.get('https://api.coingecko.com/api/v3/simple/price?ids='+coinAsk+'&vs_currencies=usd&include_24hr_change=true')
-//     .then(response => {
-//       var coin = response.data
-//       console.log(coin)
-//       var price = response.data.coinAsk.usd
-//       console.log(price)
-//       var move = response.data.coinAsk.usd_24h_change
-//       console.log(move)
-//       var newActivityCoin = coin+' $'+price+' '+move.toFixed(2)+'%'
-//       console.log('----------------------')
-//       console.log('newActivityCoin: '+newActivityCoin)
-//       resolve(newActivityCoin)
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-//   });
-// };
-
-// bot.on('messageCreate', msg => {
-//   (async ()=>{
-//     let resultPriceMessageCoin = await requstPriceCoin(msg.content)
-//     console.log('coinAsk: '+msg.content+ 'resultPriceMessage')
-//     console.log('----------------------')
-//     msg.reply(resultPriceMessageCoin)
-//   })();
-// });
 
 
 //make sure this line is the last line
