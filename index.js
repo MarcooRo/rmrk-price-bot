@@ -36,35 +36,13 @@ setInterval(function (){
   updatePrice()
 }, 60000);
 
-
 function requstPriceMessage(coinName) {
   var nameCoin = coinName;
   return new Promise(resolve => {
     axios.get('https://api.coingecko.com/api/v3/simple/price?ids='+nameCoin+'&vs_currencies=usd&include_24hr_change=true')
     .then(response => {
-      switch (nameCoin) {
-        case 'rmrk':
-          var price = response.data.rmrk.usd
-          var move = response.data.rmrk.usd_24h_change
-          break;
-        case 'moonriver':
-          var price = response.data.moonriver.usd
-          var move = response.data.moonriver.usd_24h_change
-          console.log('price: '+price)
-          console.log('move: '+move)
-          break;
-        case 'moonbeam':
-          var price = response.data.moonbeam.usd
-          var move = response.data.moonbeam.usd_24h_change
-          break;
-        case 'bitcoin':
-          var price = response.data.bitcoin.usd
-          var move = response.data.bitcoin.usd_24h_change
-          break;
-        default:
-          var price = 'sorry'
-          var move = 'not found'
-      }      
+      var price = response.data[nameCoin].usd
+      var move = response.data[nameCoin].usd_24h_change    
       var answerCoinName = nameCoin+' $'+price+' '+move.toFixed(2)+'%'
       console.log('coinName: '+answerCoinName)
       resolve(answerCoinName)
@@ -76,13 +54,14 @@ function requstPriceMessage(coinName) {
 };
 
 
-
 bot.on('messageCreate', msg => {
-
   var messaggio = msg.content
   var nameCoin = messaggio.replace("!", "");
   console.log('messaggio: '+nameCoin)
-
+  if(messaggio == '!menu'){
+    var reply = 'You can ask the price of some coins in this way: !btc, !rmrk, !mover, !glrm'
+    msg.reply(reply)
+  }
   if (nameCoin === 'rmrk') {
     (async ()=>{
       let resultPriceMessage = await requstPriceMessage('rmrk')
