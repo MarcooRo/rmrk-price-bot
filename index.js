@@ -1,16 +1,14 @@
 require('dotenv').config(); 
 
 const { Client, Intents } = require('discord.js');
-const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const bot1 = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const bot2 = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const axios = require('axios');
 
-function requstPrice() {
+function requstPriceRMRK() {
   return new Promise(resolve => {
     axios.get('https://api.coingecko.com/api/v3/simple/price?ids=rmrk&vs_currencies=usd&include_24hr_change=true')
     .then(response => {
-      // console.log(response.data.rmrk)
-      // console.log(response.data.rmrk.usd);
-      // console.log(response.data.rmrk.usd_24h_change);
       var coin = 'RMRK'
       var price = response.data.rmrk.usd
       var move = response.data.rmrk.usd_24h_change
@@ -25,11 +23,35 @@ function requstPrice() {
   });
 };
 
+function requstPriceMOVR() {
+  return new Promise(resolve => {
+    axios.get('https://api.coingecko.com/api/v3/simple/price?ids=moonriver&vs_currencies=usd&include_24hr_change=true')
+    .then(response => {
+      var coin = 'MOVR'
+      var price = response.data.moonriver.usd
+      var move = response.data.moonriver.usd_24h_change
+      var newActivity = coin+' $'+price+' '+move.toFixed(2)+'%'
+      console.log('----------------------')
+      console.log('update: '+newActivity)
+      resolve(newActivity)
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  });
+};
+
 async function updatePrice(){
-  let resultPrice = await requstPrice();
-  console.log('setActivity: '+resultPrice)
+  let resultPriceRMRK = await requstPriceRMRK();
+  console.log('setActivity: '+resultPriceRMRK)
   console.log('----------------------')
-  bot.user.setActivity(resultPrice)
+  bot1.user.setActivity(resultPriceRMRK)
+
+  let resultPriceMOVR = await requstPriceMOVR();
+  console.log('setActivity: '+resultPriceMOVR)
+  console.log('----------------------')
+  bot2.user.setActivity(resultPriceMOVR)
+
 }
 
 setInterval(function (){
@@ -54,12 +76,12 @@ function requstPriceMessage(coinName) {
 };
 
 
-bot.on('messageCreate', msg => {
+bot1.on('messageCreate', msg => {
   var messaggio = msg.content
   var nameCoin = messaggio.replace("!", "");
   console.log('messaggio: '+nameCoin)
-  if(messaggio == '!menu'){
-    var reply = 'You can ask the price of some coins in this way: !btc, !rmrk, !mover, !glrm'
+  if(messaggio == '!help'){
+    var reply = 'You can ask the price in this way: !rmrk, !btc'
     msg.reply(reply)
   }
   if (nameCoin === 'rmrk') {
@@ -69,6 +91,25 @@ bot.on('messageCreate', msg => {
       console.log('----------------------')
       msg.reply(resultPriceMessage)
     })();
+  }
+  if (nameCoin === 'btc') {
+    (async ()=>{
+      let resultPriceMessage = await requstPriceMessage('bitcoin')
+      console.log('setActivity: '+resultPriceMessage)
+      console.log('----------------------')
+      msg.reply(resultPriceMessage)
+    })();
+  }
+});
+
+
+bot2.on('messageCreate', msg => {
+  var messaggio = msg.content
+  var nameCoin = messaggio.replace("!", "");
+  console.log('messaggio: '+nameCoin)
+  if(messaggio == '!help'){
+    var reply = 'You can ask the price in this way: !movr, !glrm, !eth'
+    msg.reply(reply)
   }
   if (nameCoin === 'movr') {
     (async ()=>{
@@ -86,9 +127,9 @@ bot.on('messageCreate', msg => {
       msg.reply(resultPriceMessage)
     })();
   }
-  if (nameCoin === 'btc') {
+  if (nameCoin === 'eth') {
     (async ()=>{
-      let resultPriceMessage = await requstPriceMessage('bitcoin')
+      let resultPriceMessage = await requstPriceMessage('ethereum')
       console.log('setActivity: '+resultPriceMessage)
       console.log('----------------------')
       msg.reply(resultPriceMessage)
@@ -98,6 +139,6 @@ bot.on('messageCreate', msg => {
 
 
 
-
 //make sure this line is the last line
-bot.login(process.env.CLIENT_TOKEN); //login bot using token
+bot1.login(process.env.CLIENT_TOKEN_1); //login bot 1 using token
+bot2.login(process.env.CLIENT_TOKEN_2); //login bot 2 using token
