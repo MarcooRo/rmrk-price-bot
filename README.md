@@ -6,7 +6,6 @@ RMRK price bot <a href='https://discord.com/api/oauth2/authorize?client_id=93299
 MOVR price bot <a href='https://discord.com/api/oauth2/authorize?client_id=933847099861237791&permissions=0&scope=bot'>here</a>
 
 <h2>How to use the script</h2>
-Need: <code>node +16</code>  <code>discord.js</code> <code>axios</code> <code>dotenv</code><br>
-Copy post:
-<code>npm install discord.js axios dotenv</code><br>
-You will need to add <code>env</code> file with the bot token
+Need: <code>node +16</code> <code>npm +8</code> <code>discord.js</code> <code>axios</code> <code>dotenv</code><br>
+Copy post: <code>npm install discord.js axios dotenv</code><br>
+You will need to add <code>.env</code> file with the bot token
